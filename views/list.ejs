@@ -7,22 +7,20 @@
 </head>
 <body>
 
-    <h1> <%= day %> </h1>
+    <h1><%= day %> — To-Do List</h1>
 
     <ul>
-        <% for (let i = 0; i < newListItems.length; i++) { %>
-            <li><%= newListItems[i] %></li>
+        <% for (i = 0; i < listItems.length; i++) { %>
+            <li><%= listItems[i] %></li>
         <% } %>
-
-
     </ul>
 
+    <form method="post" action="/">
 
-    <form action="/" method="post">
-        <input type="text" name="addItem">
-        <button type="submit">Add</button>
+        <input name="addItem">
+        <button type="submit">Add to List</button>
 
     </form>
-
+    
 </body>
 </html>

@@ -1,38 +1,34 @@
 const express = require("express");
 const app = express();
-const https = require("https");
 
 app.use(express.urlencoded({ extended: true }))
 app.set("view engine", "ejs");
 
-let items = ["Buy Food", "Cook Food", "Eat Food"];
+const listItems = ["Wake up at 11am", "Teach English on Engoo", "Write Lesson Notes", "Study Javascript"]
 
-app.get("/", function(req, res) {
+app.get("/", function(req,res) {
 
-    let today = new Date();
+    const date = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
 
-    let dayOptions = {
-        weekday: "long",
-        day: "numeric",
-        month: "long"
-    }
+    let day = date.toLocaleDateString("en-GB", options);
 
-    let day = today.toLocaleDateString("en-US", dayOptions);
+    res.render("list", {day: day, listItems: listItems})
 
-    res.render("list", {day: day, newListItems: items})
+})
 
-});
 
-app.post("/", (req, res) => {
+app.post("/", function(req,res) {
 
-    let item = req.body.addItem;
-    items.push(item);
+    let newItem = req.body.addItem;
 
-    res.redirect("/");
+    listItems.push(newItem);
+
+    res.redirect("/")
 
 })
 
 
 app.listen(3000, function() {
-    console.log("Server is running, listening to port 3000");
-});
+    console.log("Server is running; listening on port 3000")
+})
