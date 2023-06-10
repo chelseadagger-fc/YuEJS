@@ -1,43 +1,36 @@
 const express = require("express");
 const app = express();
+const https = require("https");
 
+app.use(express.urlencoded({ extended: true }))
 app.set("view engine", "ejs");
+
+let items = [];
 
 app.get("/", function(req, res) {
 
     let today = new Date();
-    let currentDay = today.getDay()
-    let day = "";
 
-    switch(currentDay) {
-        case 0:
-            day = "It is a Sunday.";
-            break;
-        case 1:
-            day = "It is a Monday.";
-            break;
-        case 2:
-            day = "It is a Tuesday.";
-            break;
-        case 3:
-            day = "It is a Wednesday.";
-            break;
-        case 4:
-            day = "It is a Thursday.";
-            break;
-        case 5:
-            day = "It is a Friday.";
-            break;
-        case 6:
-            day = "It is a Saturday.";
-            break;
-        default:
-            console.log("Error: current day is equal to: " + currentDay);
+    let dayOptions = {
+        weekday: "long",
+        day: "numeric",
+        month: "long"
     }
 
-    res.render("list", {day: day})
+    let day = today.toLocaleDateString("en-US", dayOptions);
+
+    res.render("list", {day: day, newListItems: items})
 
 });
+
+app.post("/", (req, res) => {
+
+    let item = req.body.addItem;
+    items.push(item);
+
+    res.redirect("/");
+
+})
 
 
 app.listen(3000, function() {
