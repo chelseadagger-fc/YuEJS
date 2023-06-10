@@ -5,7 +5,7 @@ const https = require("https");
 app.use(express.urlencoded({ extended: true }))
 app.set("view engine", "ejs");
 
-let items = [];
+let items = ["Buy Food", "Cook Food", "Eat Food"];
 
 app.get("/", function(req, res) {
 
