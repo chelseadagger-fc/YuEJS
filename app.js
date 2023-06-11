@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const date = require(__dirname + "/date.js");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -11,10 +12,7 @@ const workItems = ["Log Into Engoo", "Check Classes", "Open Study Sessions"];
 
 app.get("/", function(req,res) {
 
-    const date = new Date();
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-
-    let day = date.toLocaleDateString("en-GB", options);
+    let day = date();
 
     res.render("list", {listTitle: day, listItems: listItems});
 
