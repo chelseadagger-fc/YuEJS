@@ -12,7 +12,7 @@ const workItems = ["Log Into Engoo", "Check Classes", "Open Study Sessions"];
 
 app.get("/", function(req,res) {
 
-    let day = date();
+    let day = date.getDate();
 
     res.render("list", {listTitle: day, listItems: listItems});
 
