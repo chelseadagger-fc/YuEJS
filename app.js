@@ -80,6 +80,19 @@ app.post("/", function(req,res) {
 
 })
 
+app.post("/delete", function(req,res){
+    const checkedItemId = req.body.checkbox;
+
+    Item.findByIdAndRemove(checkedItemId)
+        .then(function() {
+            console.log("Successfully deleted by ID.")
+        })
+        .catch(function() {
+            console.log(error);
+        });
+        res.redirect("/");
+})
+
 
 app.listen(3000, function() {
     console.log("Server is running; listening on port 3000");
