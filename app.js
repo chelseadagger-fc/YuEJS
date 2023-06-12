@@ -7,9 +7,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 
-// const listItems = ["Wake up at 11am", "Teach English on Engoo", "Write Lesson Notes", "Study Javascript"];
-// const workItems = ["Log Into Engoo", "Check Classes", "Open Study Sessions"];
-
 main().catch(err => console.log(err));
 
 async function main() {
@@ -37,6 +34,13 @@ const engooNotes = new Item({
 
 const defaultItems = [wakeUp, engooStart, engooNotes];
 
+const listSchema = {
+    name: String,
+    items: [itemsSchema]
+};
+
+const List = mongoose.model("List", listSchema);
+
 
 
 app.get("/", function(req,res) {
@@ -58,12 +62,33 @@ app.get("/", function(req,res) {
         }
     })
 
-
-
 })
 
-app.get("/work", function(req,res){
-    res.render("list", {listTitle: "Work", listItems: workItems});
+
+app.get("/:customListName", function(req,res) {
+    const customListName = req.params.customListName;
+
+    List.findOne({name: customListName})
+        .then(function(foundList) {
+
+            if(!foundList) {
+                const list = new List({
+                    name: customListName,
+                    items: defaultItems
+                });
+                list.save();
+                console.log("Didn't exist; created.");
+                res.redirect("/" + customListName);
+            } else {
+                console.log("Already exists.");
+
+                res.render("list", {listTitle: customListName, listItems: foundList.items});
+            }
+
+        })
+        .catch(function() {
+            console.log(error);
+        })
 })
 
 
