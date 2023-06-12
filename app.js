@@ -20,7 +20,6 @@ async function main() {
 const itemsSchema = new mongoose.Schema({
     name: String
 });
-
 const Item = mongoose.model('Item', itemsSchema);
 
 
@@ -38,20 +37,28 @@ const engooNotes = new Item({
 
 const defaultItems = [wakeUp, engooStart, engooNotes];
 
-Item.insertMany(defaultItems)
-.then(function() {
-    console.log("Data inserted.");
-})
-.catch(function() {
-    console.log(error);
-})
 
 
 app.get("/", function(req,res) {
 
     let day = date.getDate();
+    
+    Item.find({}).then((foundItems) => {
+        if (foundItems.length === 0) {
+            Item.insertMany(defaultItems)
+                .then(function() {
+                    console.log("Data inserted.");
+                })
+                .catch(function() {
+                    console.log(error);
+                });
+            res.redirect("/");
+        } else {
+        res.render("list", {listTitle: day, listItems: foundItems});
+        }
+    })
 
-    res.render("list", {listTitle: day, listItems: listItems});
+
 
 })
 
@@ -62,16 +69,14 @@ app.get("/work", function(req,res){
 
 app.post("/", function(req,res) {
 
-    let newItem = req.body.addItem;
+    const givenItem = req.body.addItem;
 
+    const newItem = new Item({
+        name: givenItem
+    });
 
-    if (req.body.list === "Work") {
-        workItems.push(newItem);
-        res.redirect("/work");
-    } else {
-        listItems.push(newItem);
-        res.redirect("/");
-    }
+    newItem.save();
+    res.redirect("/");
 
 })
 
